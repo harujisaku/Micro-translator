@@ -24,6 +24,15 @@ import javax.swing.JTextField;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
+static final String COPY = "コピー";
+static final String PASTE = "ペースト";
+static final String TITLE = "Micro Translator";
+static final String EXE_ICON = "translator2.png";
+static final String BUTTON_ICON = "translator.png";
+static final String URL_TEXT = "url.txt";
+static final String BEFOR_TRANS = "翻訳前";
+static final String AFTER_TRANS = "翻訳後";
+
 JLayeredPane pane;
 JTextField trans;
 JTextField text;
@@ -71,11 +80,11 @@ void setup() {
 	transmenu.add(transcopy);
 	text.setComponentPopupMenu(textmenu);
 	trans.setComponentPopupMenu(transmenu);
-  urls=loadStrings("url.txt");
-  url=urls[0];
+	urls=loadStrings("url.txt");
+	url=urls[0];
 	fill(255,50,20);
-	PImage icon =loadImage("translator.png");
-	image(icon,50,50,100,100);
+	PImage buttonImage =loadImage("translator.png");
+	image(buttonImage,50,50,100,100);
 	text("翻訳前",0,10);
 	text("翻訳後",0,140);
 	thread("firstTrans");
