@@ -11,6 +11,7 @@ JTextField text;
 String url="https://script.google.com/macros/s/AKfycbzvbsjOnmB22F4n7hdaEYwRAXnHlIVKgZhv_Rsdg4-Qylo8qw/exec?word=";
 void setup() {
 	size(200, 190);
+	surface.setAlwaysOnTop(true);
 	Canvas canvas = (Canvas) surface.getNative();
 	pane = (JLayeredPane) canvas.getParent().getParent();
 	text = new JTextField();
