@@ -6,6 +6,9 @@ import java.net.URL;
 import java.io.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusAdapter;
 
 JLayeredPane pane;
 JTextField trans;
@@ -22,6 +25,11 @@ void setup() {
 	trans.setEditable(false);
 	text.setBounds(10, 10, 180, 30);
 	trans.setBounds(10, 150, 180, 30);
+	text.addFocusListener(new FocusAdapter() {
+		@Override public void focusGained(FocusEvent e) {
+			((JTextField) e.getComponent()).selectAll();
+		}
+	});
 	pane.add(text);
 	pane.add(trans);
 	fill(255,50,20);
@@ -36,6 +44,7 @@ void setup() {
 	endShape(CLOSE);
 	text("翻訳前",0,10);
 	text("翻訳後",0,140);
+	thread("firstTrans");
 }
 private ActionListener enterActionListener = new ActionListener() {
 	@Override
@@ -45,6 +54,11 @@ private ActionListener enterActionListener = new ActionListener() {
 };
 
 void draw() {
+}
+
+void firstTrans(){
+	text.setText("hello world");
+	mousePressed();
 }
 
 void mousePressed(){
