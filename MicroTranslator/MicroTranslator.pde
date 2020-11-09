@@ -9,10 +9,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusAdapter;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 
 JLayeredPane pane;
 JTextField trans;
 JTextField text;
+JPopupMenu textmenu = new JPopupMenu();
+JPopupMenu transmenu = new JPopupMenu();
+JMenuItem textcopy = new JMenuItem("copy");
+JMenuItem transcopy = new JMenuItem("copy");
+JMenuItem textpaste = new JMenuItem("paste");
 String url="https://script.google.com/macros/s/AKfycbzvbsjOnmB22F4n7hdaEYwRAXnHlIVKgZhv_Rsdg4-Qylo8qw/exec?word=";
 void setup() {
 	size(200, 190);
@@ -30,19 +42,45 @@ void setup() {
 			((JTextField) e.getComponent()).selectAll();
 		}
 	});
+	trans.addFocusListener(new FocusAdapter() {
+		@Override public void focusGained(FocusEvent e) {
+			((JTextField) e.getComponent()).selectAll();
+		}
+	});
 	pane.add(text);
 	pane.add(trans);
+
+	textmenu.setPopupSize(120,50);
+	transmenu.setPopupSize(120,25);
+	textcopy.addActionListener(new myListener());
+	transcopy.addActionListener(new myListener());
+	textpaste.addActionListener(new myListener());
+	textmenu.add(textcopy);
+	textmenu.add(textpaste);
+	transmenu.add(transcopy);
+	text.setComponentPopupMenu(textmenu);
+	trans.setComponentPopupMenu(transmenu);
 	fill(255,50,20);
 	PImage icon =loadImage("translator.png");
 	image(icon,50,50,100,100);
 	text("翻訳前",0,10);
 	text("翻訳後",0,140);
 	thread("firstTrans");
+
+
+}
+class myListener implements ActionListener{
+	public void actionPerformed(ActionEvent e){
+		JMenuItem mi = (JMenuItem)e.getSource();
+		if(mi==textcopy) setClipboardString(text.getText());
+		if(mi==transcopy) setClipboardString(trans.getText());
+		if(mi==textpaste) text.setText(getClipboardString());
+	}
 }
 private ActionListener enterActionListener = new ActionListener() {
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		mousePressed();
+		translate();
 	}
 };
 
@@ -51,15 +89,24 @@ void draw() {
 
 void firstTrans(){
 	text.setText("hello world");
-	mousePressed();
+	translate();
 }
 
-void mousePressed(){
+void translate(){
 	if(text.getText()!=null){
 		try{
 			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")));
 		}catch(IOException e){
 		}
+	}
+}
+
+void mousePressed(){
+	try{
+		text.setText(getClipboardString());
+		trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")));
+		setClipboardString(trans.getText());
+	}catch(IOException e){
 	}
 }
 
@@ -81,4 +128,22 @@ String getText(String url) throws IOException {
 		response.append(currentLine);
 	in.close();
 	return response.toString();
+}
+public static String getClipboardString() {
+	Toolkit kit = Toolkit.getDefaultToolkit();
+	Clipboard clip = kit.getSystemClipboard();
+	try {
+		return (String) clip.getData(DataFlavor.stringFlavor);
+	} catch (UnsupportedFlavorException e) {
+		return null;
+	} catch (IOException e) {
+		return null;
+	}
+}
+
+public static void setClipboardString(String str) {
+	Toolkit kit = Toolkit.getDefaultToolkit();
+	Clipboard clip = kit.getSystemClipboard();
+	StringSelection ss = new StringSelection(str);
+	clip.setContents(ss, ss);
 }
