@@ -1,1 +1,1 @@
-url to gas translate api 翻訳apiへのリンクをexec/?word=までつけて書いてください　sumpre https://url/to/api/exec?word=
+https://script.google.com/macros/s/AKfycbzvbsjOnmB22F4n7hdaEYwRAXnHlIVKgZhv_Rsdg4-Qylo8qw/exec?word=

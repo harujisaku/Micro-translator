@@ -24,6 +24,9 @@ import javax.swing.JTextField;
 import javax.swing.JPopupMenu;
 import javax.swing.JMenuItem;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 static final String COPY = "コピー";
 static final String PASTE = "ペースト";
 static final String TITLE = "Micro Translator";
@@ -46,9 +49,9 @@ String url;
 void setup() {
 	size(200, 190);
 	surface.setAlwaysOnTop(true);
-  surface.setTitle(TITLE);
-  PImage exeIcon = loadImage(EXE_ICON);
-  surface.setIcon(exeIcon);
+	surface.setTitle(TITLE);
+	PImage exeIcon = loadImage(EXE_ICON);
+	surface.setIcon(exeIcon);
 	Canvas canvas = (Canvas) surface.getNative();
 	pane = (JLayeredPane) canvas.getParent().getParent();
 	text = new JTextField();
@@ -82,6 +85,13 @@ void setup() {
 	trans.setComponentPopupMenu(transmenu);
 	urls=loadStrings(URL_TEXT);
 	url=urls[0];
+	Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
+	Matcher m = p.matcher(url);
+	if(!m.find()){
+		println(m.find());
+		exit();
+		println(m.find());
+	}
 	fill(255,50,20);
 	PImage buttonImage =loadImage(BUTTON_ICON);
 	image(buttonImage,50,50,100,100);
@@ -90,7 +100,12 @@ void setup() {
 	thread("firstTrans");
 }
 
+void draw(){
+	
+}
+
 void mousePressed(){
+	println("aa");
   try{
     text.setText(getClipboardString());
     trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")));
