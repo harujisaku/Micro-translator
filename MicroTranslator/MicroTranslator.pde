@@ -33,15 +33,8 @@ void setup() {
 	pane.add(text);
 	pane.add(trans);
 	fill(255,50,20);
-	beginShape();
-	vertex(80,45);
-	vertex(120,45);
-	vertex(120,100);
-	vertex(140,100);
-	vertex(100,140);
-	vertex(60,100);
-	vertex(80,100);
-	endShape(CLOSE);
+	PImage icon =loadImage("translator.png");
+	image(icon,50,50,100,100);
 	text("翻訳前",0,10);
 	text("翻訳後",0,140);
 	thread("firstTrans");
