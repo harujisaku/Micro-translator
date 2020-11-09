@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 JLayeredPane pane;
 JTextField trans;
@@ -16,6 +18,8 @@ void setup() {
 	pane = (JLayeredPane) canvas.getParent().getParent();
 	text = new JTextField();
 	trans = new JTextField();
+	text.addActionListener(enterActionListener);
+	trans.setEditable(false);
 	text.setBounds(10, 10, 180, 30);
 	trans.setBounds(10, 150, 180, 30);
 	pane.add(text);
@@ -30,20 +34,28 @@ void setup() {
 	vertex(60,100);
 	vertex(80,100);
 	endShape(CLOSE);
+	text("翻訳前",0,10);
+	text("翻訳後",0,140);
 }
+private ActionListener enterActionListener = new ActionListener() {
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		mousePressed();
+	}
+};
 
 void draw() {
 }
 
 void mousePressed(){
 	if(text.getText()!=null){
-		println("translate");
 		try{
 			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")));
 		}catch(IOException e){
 		}
 	}
 }
+
 String getText(String url) throws IOException {
 	HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 	int responseCode = connection.getResponseCode();
