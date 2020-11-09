@@ -38,17 +38,17 @@ JTextField trans;
 JTextField text;
 JPopupMenu textmenu = new JPopupMenu();
 JPopupMenu transmenu = new JPopupMenu();
-JMenuItem textcopy = new JMenuItem("copy");
-JMenuItem transcopy = new JMenuItem("copy");
-JMenuItem textpaste = new JMenuItem("paste");
+JMenuItem textcopy = new JMenuItem(COPY);
+JMenuItem transcopy = new JMenuItem(COPY);
+JMenuItem textpaste = new JMenuItem(PASTE);
 String[] urls;
 String url;
 void setup() {
 	size(200, 190);
 	surface.setAlwaysOnTop(true);
-  surface.setTitle("Micro Translator");
-  PImage exeicon = loadImage("translator2.png");
-  surface.setIcon(exeicon);
+  surface.setTitle(TITLE);
+  PImage exeIcon = loadImage(EXE_ICON);
+  surface.setIcon(exeIcon);
 	Canvas canvas = (Canvas) surface.getNative();
 	pane = (JLayeredPane) canvas.getParent().getParent();
 	text = new JTextField();
@@ -80,13 +80,13 @@ void setup() {
 	transmenu.add(transcopy);
 	text.setComponentPopupMenu(textmenu);
 	trans.setComponentPopupMenu(transmenu);
-	urls=loadStrings("url.txt");
+	urls=loadStrings(URL_TEXT);
 	url=urls[0];
 	fill(255,50,20);
-	PImage buttonImage =loadImage("translator.png");
+	PImage buttonImage =loadImage(BUTTON_ICON);
 	image(buttonImage,50,50,100,100);
-	text("翻訳前",0,10);
-	text("翻訳後",0,140);
+	text(BEFOR_TRANS,0,10);
+	text(AFTER_TRANS,0,140);
 	thread("firstTrans");
 }
 
