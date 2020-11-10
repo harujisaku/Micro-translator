@@ -6,12 +6,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.awt.Canvas;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusAdapter;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
@@ -58,7 +58,7 @@ void setup() {
 	trans = new JTextField();
 	text.addActionListener(enterActionListener);
 	trans.setEditable(false);
-	text.setBounds(10, 10, 180, 30);
+	text.setBounds(10, 13, 180, 30);
 	trans.setBounds(10, 150, 180, 30);
 	text.addFocusListener(new FocusAdapter() {
 		@Override public void focusGained(FocusEvent e) {
@@ -94,30 +94,37 @@ void setup() {
 	}
 	fill(255,50,20);
 	PImage buttonImage =loadImage(BUTTON_ICON);
-	image(buttonImage,50,50,100,100);
-	text(BEFOR_TRANS,0,10);
+	image(buttonImage,0,50);
+	text(BEFOR_TRANS,0,11);
 	text(AFTER_TRANS,0,140);
 	thread("firstTrans");
 }
 
 void draw(){
-	
+
 }
 
 void mousePressed(){
-	println("aa");
-  try{
-    text.setText(getClipboardString());
-    trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")));
-    setClipboardString(trans.getText());
-  }catch(IOException e){
-  }
+	try{
+		if(getClipboardString()!=null){
+			text.setText(getClipboardString());
+			trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")));
+			setClipboardString(trans.getText());
+		}
+	}catch(IOException e){
+	}catch(NullPointerException e){
+	}
 }
 
 
 void firstTrans(){
 	text.setText("hello world");
-	translate();
+	if(text.getText()!=null&&trans.getText()==null){
+		try{
+			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")));
+		}catch(IOException e){
+		}
+	}
 }
 
 void translate(){
