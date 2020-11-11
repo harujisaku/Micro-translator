@@ -1,13 +1,14 @@
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.awt.datatransfer.UnsupportedFlavorException;
 
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.awt.datatransfer.UnsupportedFlavorException;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
@@ -21,7 +22,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
-import javax.swing.JPopupMenu;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +30,6 @@ static final String COPY = "コピー";
 static final String PASTE = "ペースト";
 static final String TITLE = "Micro Translator";
 static final String EXE_ICON = "translator2.png";
-static final String BUTTON_ICON = "translator.png";
 static final String URL_TEXT = "url.txt";
 static final String BEFOR_TRANS = "翻訳前";
 static final String AFTER_TRANS = "翻訳後";
@@ -43,11 +42,14 @@ JPopupMenu transmenu = new JPopupMenu();
 JMenuItem textcopy = new JMenuItem(COPY);
 JMenuItem transcopy = new JMenuItem(COPY);
 JMenuItem textpaste = new JMenuItem(PASTE);
-String[] urls;
 String url;
+String[] fontList = PFont.list();
+PFont fontG;
+PFont fontM;
 void setup() {
 	size(200, 200);
 	windowSetting();
+	String[] urls;
 	urls=loadStrings(URL_TEXT);
 	url=urls[0];
 	Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
@@ -55,12 +57,18 @@ void setup() {
 	if(!m.find()){
 		exit();
 	}
-	fill(255,50,20);
-	PImage buttonImage =loadImage(BUTTON_ICON);
-	image(buttonImage,0,50);
-	text(BEFOR_TRANS,0,11);
+		fontG=createFont("SansSerif",90.0);
+		fontM=createFont("Serif",90.0);
+	textAlign(LEFT,TOP);
+	textSize(90.0);
+	textFont(fontM,90.0);
+	fill(250);
+	text("あ",20,40);
+	textFont(fontG,90.0);
+	text("↓  /A",-30,40);
+	textSize(13.0);
+	text(BEFOR_TRANS,0,-3);
 	text(AFTER_TRANS,0,140);
-	thread("firstTrans");
 }
 
 void draw(){
@@ -79,17 +87,6 @@ void mousePressed(){
 	}
 }
 
-
-void firstTrans(){
-	text.setText("hello world");
-	if(text.getText()!=null&&trans.getText()==null){
-		try{
-			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")));
-		}catch(IOException e){
-		}
-	}
-}
-
 void translate(){
 	if(text.getText()!=null){
 		try{
@@ -102,6 +99,7 @@ void translate(){
 void windowSetting(){
 	surface.setAlwaysOnTop(true);
 	surface.setTitle(TITLE);
+	background(50);
 	PImage exeIcon = loadImage(EXE_ICON);
 	surface.setIcon(exeIcon);
 	Canvas canvas = (Canvas) surface.getNative();
@@ -112,6 +110,12 @@ void windowSetting(){
 	trans.setEditable(false);
 	text.setBounds(10, 13, 180, 30);
 	trans.setBounds(10, 160, 180, 30);
+	text.setBackground(new Color(50,50,50));
+	trans.setBackground(new Color(50,50,50));
+	text.setForeground(new Color(250,250,250));
+	trans.setForeground(new Color(250,250,250));
+	text.setCaretColor(new Color(82,139,255));
+	trans.setCaretColor(new Color(82,139,255));
 	text.addFocusListener(new FocusAdapter() {
 		@Override public void focusGained(FocusEvent e) {
 			((JTextField) e.getComponent()).selectAll();
@@ -177,17 +181,17 @@ public static void setClipboardString(String str) {
 
 
 class myListener implements ActionListener{
-  void actionPerformed(ActionEvent e){
-    JMenuItem mi = (JMenuItem)e.getSource();
-    if(mi==textcopy) setClipboardString(text.getText());
-    if(mi==transcopy) setClipboardString(trans.getText());
-    if(mi==textpaste) text.setText(getClipboardString());
-  }
+	void actionPerformed(ActionEvent e){
+		JMenuItem mi = (JMenuItem)e.getSource();
+		if(mi==textcopy) setClipboardString(text.getText());
+		if(mi==transcopy) setClipboardString(trans.getText());
+		if(mi==textpaste) text.setText(getClipboardString());
+	}
 }
 
 ActionListener enterActionListener = new ActionListener() {
-  @Override
-  void actionPerformed(ActionEvent e) {
-    translate();
-  }
+	@Override
+	void actionPerformed(ActionEvent e) {
+		translate();
+	}
 };
