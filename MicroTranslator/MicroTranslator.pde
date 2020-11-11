@@ -22,17 +22,30 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-static final String COPY = "コピー";
-static final String PASTE = "ペースト";
+static final String COPY = "コピー,copy";
+static final String PASTE = "ペースト,paste";
 static final String TITLE = "Micro Translator";
 static final String EXE_ICON = "translator2.png";
 static final String URL_TEXT = "url.txt";
-static final String BEFOR_TRANS = "翻訳前";
-static final String AFTER_TRANS = "翻訳後";
+static final String BEFOR_TRANS = "before";
+static final String AFTER_TRANS = "after";
+static final String TRANS_TO = "trans to";
+static final int BUTTON_POS_X = 0;
+static final int BUTTON_POS_Y = 65;
+static final Color BACKGROUND_COLOR = new Color(50,50,50);
+static final Color FOREGROUND_COLOR = new Color(250,250,250);
+
+String url;
+String[] fontList = PFont.list();
+String[] langList ={"Japanese","English","French","Russian","Italian"};
+String[] langLists ={"ja","en","fr","ru","it"};
+PFont fontG;
+PFont fontM;
 
 JLayeredPane pane;
 JTextField trans;
@@ -42,12 +55,10 @@ JPopupMenu transmenu = new JPopupMenu();
 JMenuItem textcopy = new JMenuItem(COPY);
 JMenuItem transcopy = new JMenuItem(COPY);
 JMenuItem textpaste = new JMenuItem(PASTE);
-String url;
-String[] fontList = PFont.list();
-PFont fontG;
-PFont fontM;
+JComboBox langCombox = new JComboBox(langList);
+
 void setup() {
-	size(200, 200);
+	size(200, 225);
 	windowSetting();
 	String[] urls;
 	urls=loadStrings(URL_TEXT);
@@ -62,13 +73,14 @@ void setup() {
 	textAlign(LEFT,TOP);
 	textSize(90.0);
 	textFont(fontM,90.0);
-	fill(250);
-	text("あ",20,40);
+	fill(FOREGROUND_COLOR.getRed(),FOREGROUND_COLOR.getGreen(),FOREGROUND_COLOR.getBlue());
+	text("あ",BUTTON_POS_X+20,BUTTON_POS_Y);
 	textFont(fontG,90.0);
-	text("↓  /A",-30,40);
+	text("↓  /A",BUTTON_POS_X-30,BUTTON_POS_Y);
 	textSize(13.0);
 	text(BEFOR_TRANS,0,-3);
-	text(AFTER_TRANS,0,140);
+	text(TRANS_TO,5,45);
+	text(AFTER_TRANS,0,BUTTON_POS_Y+100);
 }
 
 void draw(){
@@ -79,7 +91,7 @@ void mousePressed(){
 	try{
 		if(getClipboardString()!=null){
 			text.setText(getClipboardString());
-			trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")));
+			trans.setText(getText(url+URLEncoder.encode(getClipboardString(), "UTF-8")+"&target="+langLists[langCombox.getSelectedIndex()]));
 			setClipboardString(trans.getText());
 		}
 	}catch(IOException e){
@@ -90,7 +102,7 @@ void mousePressed(){
 void translate(){
 	if(text.getText()!=null){
 		try{
-			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")));
+			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")+"&target="+langLists[langCombox.getSelectedIndex()]));
 		}catch(IOException e){
 		}
 	}
@@ -99,7 +111,7 @@ void translate(){
 void windowSetting(){
 	surface.setAlwaysOnTop(true);
 	surface.setTitle(TITLE);
-	background(50);
+	background(BACKGROUND_COLOR.getRed(),BACKGROUND_COLOR.getGreen(),BACKGROUND_COLOR.getBlue());
 	PImage exeIcon = loadImage(EXE_ICON);
 	surface.setIcon(exeIcon);
 	Canvas canvas = (Canvas) surface.getNative();
@@ -109,13 +121,15 @@ void windowSetting(){
 	text.addActionListener(enterActionListener);
 	trans.setEditable(false);
 	text.setBounds(10, 13, 180, 30);
-	trans.setBounds(10, 160, 180, 30);
-	text.setBackground(new Color(50,50,50));
-	trans.setBackground(new Color(50,50,50));
-	text.setForeground(new Color(250,250,250));
-	trans.setForeground(new Color(250,250,250));
+	trans.setBounds(10, 185, 180, 30);
+	text.setBackground(BACKGROUND_COLOR);
+	trans.setBackground(BACKGROUND_COLOR);
+	text.setForeground(FOREGROUND_COLOR);
+	trans.setForeground(FOREGROUND_COLOR);
 	text.setCaretColor(new Color(82,139,255));
 	trans.setCaretColor(new Color(82,139,255));
+	langCombox.setBackground(BACKGROUND_COLOR);
+	langCombox.setForeground(FOREGROUND_COLOR);
 	text.addFocusListener(new FocusAdapter() {
 		@Override public void focusGained(FocusEvent e) {
 			((JTextField) e.getComponent()).selectAll();
@@ -126,8 +140,10 @@ void windowSetting(){
 			((JTextField) e.getComponent()).selectAll();
 		}
 	});
+	langCombox.setBounds(50,45,100,25);
 	pane.add(text);
 	pane.add(trans);
+	pane.add(langCombox);
 	textmenu.setPopupSize(120,50);
 	transmenu.setPopupSize(120,25);
 	textcopy.addActionListener(new myListener());
