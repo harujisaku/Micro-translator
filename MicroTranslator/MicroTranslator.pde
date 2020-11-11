@@ -9,6 +9,7 @@ import java.net.URL;
 import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.awt.Color;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
@@ -23,6 +24,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JLayeredPane;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JButton;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +37,7 @@ static final String URL_TEXT = "url.txt";
 static final String BEFOR_TRANS = "before";
 static final String AFTER_TRANS = "after";
 static final String TRANS_TO = "trans to";
+static final String TRANS_BUTTON = "trans";
 static final int BUTTON_POS_X = 0;
 static final int BUTTON_POS_Y = 65;
 static final Color BACKGROUND_COLOR = new Color(50,50,50);
@@ -56,6 +59,7 @@ JMenuItem textcopy = new JMenuItem(COPY);
 JMenuItem transcopy = new JMenuItem(COPY);
 JMenuItem textpaste = new JMenuItem(PASTE);
 JComboBox langCombox = new JComboBox(langList);
+JButton transButton = new JButton(TRANS_BUTTON);
 
 void setup() {
 	size(200, 225);
@@ -128,8 +132,6 @@ void windowSetting(){
 	trans.setForeground(FOREGROUND_COLOR);
 	text.setCaretColor(new Color(82,139,255));
 	trans.setCaretColor(new Color(82,139,255));
-	langCombox.setBackground(BACKGROUND_COLOR);
-	langCombox.setForeground(FOREGROUND_COLOR);
 	text.addFocusListener(new FocusAdapter() {
 		@Override public void focusGained(FocusEvent e) {
 			((JTextField) e.getComponent()).selectAll();
@@ -141,9 +143,20 @@ void windowSetting(){
 		}
 	});
 	langCombox.setBounds(50,45,100,25);
+	langCombox.setBackground(BACKGROUND_COLOR);
+	langCombox.setForeground(FOREGROUND_COLOR);
+	transButton.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		translate();
+	}});
+	transButton.setBounds(150,45,50,25);
+	transButton.setMargin(new Insets(0,0,0,0));
+	transButton.setBackground(BACKGROUND_COLOR);
+	transButton.setForeground(FOREGROUND_COLOR);
 	pane.add(text);
 	pane.add(trans);
 	pane.add(langCombox);
+	pane.add(transButton);
 	textmenu.setPopupSize(120,50);
 	transmenu.setPopupSize(120,25);
 	textcopy.addActionListener(new myListener());
