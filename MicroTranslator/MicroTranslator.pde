@@ -42,6 +42,7 @@ static final String BEFOR_TRANS = "before";
 static final String AFTER_TRANS = "after";
 static final String TRANS_TO = "trans to";
 static final String TRANS_BUTTON = "trans";
+static final String RETURN_LINE = System.getProperty("line.separator");
 static final int BUTTON_POS_X = 0;
 static final int BUTTON_POS_Y = 65;
 static final Color BACKGROUND_COLOR = new Color(50,50,50);
@@ -157,14 +158,11 @@ void mousePressed(){
 
 void translate(){
 	if(text.getText()!=null){
-		try{
 			if(isBigger){
-				transArea.setText(getText(url+URLEncoder.encode(textArea.getText(), "UTF-8")+"&target="+langLists[langCombox.getSelectedIndex()]));
+				transArea.setText(translateForGoogleAPI(textArea.getText()));
 				return;
 			}
-			trans.setText(getText(url+URLEncoder.encode(text.getText(), "UTF-8")+"&target="+langLists[langCombox.getSelectedIndex()]));
-		}catch(IOException e){
-		}
+		trans.setText(translateForGoogleAPI(text.getText()));
 	}
 }
 
@@ -307,3 +305,18 @@ ActionListener enterActionListener = new ActionListener() {
 		translate();
 	}
 };
+
+String translateForGoogleAPI(String text){
+	try{
+		text = text.replace("\n","<rl>");
+		text = text.replace("<nt>","<span translate=\"no\">");
+		text = text.replace("</nt>","</span>");
+		String transedText = getText(url+URLEncoder.encode(text, "UTF-8")+"&target="+langLists[langCombox.getSelectedIndex()]);
+		transedText = transedText.replace("<span translate=\"no\">","");
+		transedText = transedText.replace("</span>","");
+		transedText = transedText.replace("<rl>",System.lineSeparator());
+		return transedText;
+	}catch(IOException e){
+		return null;
+	}
+}
