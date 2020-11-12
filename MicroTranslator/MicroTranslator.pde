@@ -289,13 +289,13 @@ class myListener implements ActionListener{
 	void actionPerformed(ActionEvent e){
 		JMenuItem mi = (JMenuItem)e.getSource();
 		if(!isBigger){
-			if(mi==textcopy) setClipboardString(text.getText());
-			if(mi==transcopy) setClipboardString(trans.getText());
-			if(mi==textpaste) text.setText(getClipboardString());
+			if(mi==textcopy) text.copy();
+			if(mi==transcopy) trans.copy();
+			if(mi==textpaste) text.paste();
 		}else{
-			if(mi==textcopy) setClipboardString(textArea.getText());
-			if(mi==transcopy) setClipboardString(transArea.getText());
-			if(mi==textpaste) textArea.append(getClipboardString());
+			if(mi==textcopy) textArea.copy();
+			if(mi==transcopy) transArea.copy();
+			if(mi==textpaste) textArea.paste();
 		}
 	}
 }
