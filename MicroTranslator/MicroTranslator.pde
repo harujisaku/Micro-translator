@@ -45,6 +45,7 @@ static final String TRANS_TO = "trans to";
 static final String TRANS_BUTTON = "trans";
 static final String RETURN_LINE = System.getProperty("line.separator");
 static final String SELECT_ALL_CHECKBOX = "select all";
+static final String ALWAYS_TOP_CHECKBOX = "always Top";
 static final int BUTTON_POS_X = 0;
 static final int BUTTON_POS_Y = 65;
 static final Color BACKGROUND_COLOR = new Color(50,50,50);
@@ -76,6 +77,7 @@ JMenuItem textpaste = new JMenuItem(PASTE);
 JComboBox langCombox = new JComboBox(langList);
 JButton transButton = new JButton(TRANS_BUTTON);
 JCheckBox selectAll;
+JCheckBox alwaysTop;
 
 void setup() {
 	size(200, 225);
@@ -102,6 +104,7 @@ void draw(){
 		textPane = new JScrollPane(textArea);
 		transPane = new JScrollPane(transArea);
 		selectAll = new JCheckBox(SELECT_ALL_CHECKBOX);
+		alwaysTop = new JCheckBox(ALWAYS_TOP_CHECKBOX);
 		textPane.setBounds(10,13,480,125);
 		transPane.setBounds(10,165,480,125);
 		textArea.setBounds(10,13,480,125);
@@ -120,11 +123,16 @@ void draw(){
 		selectAll.setBounds(240,139,100,25);
 		selectAll.setBackground(BACKGROUND_COLOR);
 		selectAll.setForeground(FOREGROUND_COLOR);
+		alwaysTop.setBounds(340,139,100,25);
+		alwaysTop.setBackground(BACKGROUND_COLOR);
+		alwaysTop.setForeground(FOREGROUND_COLOR);
+		alwaysTop.addActionListener(new CheckAction());
 		pane.remove(text);
 		pane.remove(trans);
 		pane.add(textPane);
 		pane.add(transPane);
 		pane.add(selectAll);
+		pane.add(alwaysTop);
 		textArea.requestFocus();
 		textArea.setCaretPosition(textArea.getText().length());
 		delay(10);
@@ -307,6 +315,13 @@ class myListener implements ActionListener{
 			if(mi==transcopy) transArea.copy();
 			if(mi==textpaste) textArea.paste();
 		}
+	}
+}
+
+class CheckAction implements ActionListener {
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		surface.setAlwaysOnTop(alwaysTop.isSelected());
 	}
 }
 
