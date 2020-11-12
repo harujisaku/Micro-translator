@@ -112,6 +112,7 @@ void draw(){
 		transArea.setCaretColor(new Color(82,139,255));
 		textArea.setComponentPopupMenu(textmenu);
 		transArea.setComponentPopupMenu(transmenu);
+		transArea.setEditable(false);
 		pane.remove(text);
 		pane.remove(trans);
 		pane.add(textPane);
@@ -130,7 +131,7 @@ void draw(){
 		});
 		transArea.addFocusListener(new FocusAdapter() {
 			@Override public void focusGained(FocusEvent e) {
-				// ((JTextArea) e.getComponent()).selectAll();
+				((JTextArea) e.getComponent()).selectAll();
 			}
 		});
 		isBigged=true;
