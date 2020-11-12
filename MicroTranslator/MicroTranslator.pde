@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
+import javax.swing.JCheckBox;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +44,7 @@ static final String AFTER_TRANS = "after";
 static final String TRANS_TO = "trans to";
 static final String TRANS_BUTTON = "trans";
 static final String RETURN_LINE = System.getProperty("line.separator");
+static final String SELECT_ALL_CHECKBOX = "select all";
 static final int BUTTON_POS_X = 0;
 static final int BUTTON_POS_Y = 65;
 static final Color BACKGROUND_COLOR = new Color(50,50,50);
@@ -73,6 +75,7 @@ JMenuItem transcopy = new JMenuItem(COPY);
 JMenuItem textpaste = new JMenuItem(PASTE);
 JComboBox langCombox = new JComboBox(langList);
 JButton transButton = new JButton(TRANS_BUTTON);
+JCheckBox selectAll;
 
 void setup() {
 	size(200, 225);
@@ -98,6 +101,7 @@ void draw(){
 		transArea = new JTextArea(trans.getText());
 		textPane = new JScrollPane(textArea);
 		transPane = new JScrollPane(transArea);
+		selectAll = new JCheckBox(SELECT_ALL_CHECKBOX);
 		textPane.setBounds(10,13,480,125);
 		transPane.setBounds(10,165,480,125);
 		textArea.setBounds(10,13,480,125);
@@ -113,10 +117,14 @@ void draw(){
 		textArea.setComponentPopupMenu(textmenu);
 		transArea.setComponentPopupMenu(transmenu);
 		transArea.setEditable(false);
+		selectAll.setBounds(240,139,100,25);
+		selectAll.setBackground(BACKGROUND_COLOR);
+		selectAll.setForeground(FOREGROUND_COLOR);
 		pane.remove(text);
 		pane.remove(trans);
 		pane.add(textPane);
 		pane.add(transPane);
+		pane.add(selectAll);
 		textArea.requestFocus();
 		textArea.setCaretPosition(textArea.getText().length());
 		delay(10);
@@ -126,11 +134,13 @@ void draw(){
 		delay(100);
 		textArea.addFocusListener(new FocusAdapter() {
 			@Override public void focusGained(FocusEvent e) {
+				if(!selectAll.isSelected()) return;
 				((JTextArea) e.getComponent()).selectAll();
 			}
 		});
 		transArea.addFocusListener(new FocusAdapter() {
 			@Override public void focusGained(FocusEvent e) {
+				if(!selectAll.isSelected()) return;
 				((JTextArea) e.getComponent()).selectAll();
 			}
 		});
@@ -204,7 +214,7 @@ void windowSetting(){
 	public void actionPerformed(ActionEvent e) {
 		translate();
 	}});
-	transButton.setBounds(150,45,50,25);
+	transButton.setBounds(150,45,40,25);
 	transButton.setMargin(new Insets(0,0,0,0));
 	transButton.setBackground(BACKGROUND_COLOR);
 	transButton.setForeground(FOREGROUND_COLOR);
