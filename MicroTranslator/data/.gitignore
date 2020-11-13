@@ -9,4 +9,5 @@ application.windows64*
 application.macosx*
 out
 build
+*.properties
 MicroTranslator\data\MicroTranslator.properties
