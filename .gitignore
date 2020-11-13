@@ -10,3 +10,6 @@ application.macosx*
 out
 build
 MicroTranslator\data\MicroTranslator.properties
+*.class
+*.jar
+*.pde
