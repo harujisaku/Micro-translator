@@ -5,6 +5,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.FileReader;
 
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
@@ -61,9 +62,10 @@ static final Color FOREGROUND_COLOR = new Color(250,250,250);
 boolean isBigger = false;
 boolean isBigged = false;
 boolean wantBig = false;
-boolean isAlwaysTop;
-boolean isSelectAll;
-String url;
+boolean isAlwaysTop = true;
+boolean isSelectAll = true;
+String url = "https://script.google.com/macros/s/AKfycbzlq6vwO3tljMLjPg6l2nU4IetxueScBmN9RU4n3dm4rl6_4Wg/exec?text=";
+
 String[] fontList = PFont.list();
 String[] langList ={"Japanese","English","French","Russian","Italian"};
 String[] langLists ={"ja","en","fr","ru","it"};
@@ -95,13 +97,15 @@ void setup() {
 	if(url!=null){
 		Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
 		Matcher m = p.matcher(url);
+		if(!m.find()){
+			exit();
+		}
+		fontG=createFont("SansSerif",90.0);
+		fontM=createFont("Serif",90.0);
+		drawButton();
+		return;
 	}
-	if(!m.find()){
-		exit();
-	}
-	fontG=createFont("SansSerif",90.0);
-	fontM=createFont("Serif",90.0);
-	drawButton();
+	exit();
 }
 
 void draw(){
@@ -254,7 +258,7 @@ void windowSetting(){
 
 void drawButton(){
 	if(!isBigger){
-		textAlign(LEFT,TOP);
+		 textAlign(LEFT,TOP);
 		textSize(90.0);
 		textFont(fontM,90.0);
 		fill(FOREGROUND_COLOR.getRed(),FOREGROUND_COLOR.getGreen(),FOREGROUND_COLOR.getBlue());
@@ -278,10 +282,15 @@ void writeConfig(){
 	try {
 		file = new FileWriter(dataPath("")+"\\MicroTranslator.properties");
 		p = new Properties();
-
-		p.setProperty("alwaysTop", String.valueOf(alwaysTop.isSelected()));
-		p.setProperty("selectAll", String.valueOf(selectAll.isSelected()));
-		p.setProperty("url",url);
+		if(isBigged){
+			p.setProperty("alwaysTop", String.valueOf(alwaysTop.isSelected()));
+			p.setProperty("selectAll", String.valueOf(selectAll.isSelected()));
+			p.setProperty("url",url);
+		}else{
+			p.setProperty("alwaysTop","true");
+			p.setProperty("selectAll","true");
+			p.setProperty("url",url);
+		}
 		p.store(file, "config");
 
 	}catch (Exception e) {
@@ -297,8 +306,7 @@ void writeConfig(){
 	}
 }
 
-import java.io.FileReader;
-import java.util.Properties;
+
 void loadConfig(){
 	FileReader file  = null;
 		try {
@@ -310,6 +318,7 @@ void loadConfig(){
 			url=p.getProperty("url");
 		}catch (Exception e) {
 			System.out.println(e.getMessage());
+			writeConfig();
 		}finally {
 			if(file != null) {
 				try {
