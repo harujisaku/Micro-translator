@@ -92,8 +92,10 @@ void setup() {
 	size(200, 225);
 	windowSetting();
 	loadConfig();
-	Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
-	Matcher m = p.matcher(url);
+	if(url!=null){
+		Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
+		Matcher m = p.matcher(url);
+	}
 	if(!m.find()){
 		exit();
 	}
@@ -279,6 +281,7 @@ void writeConfig(){
 
 		p.setProperty("alwaysTop", String.valueOf(alwaysTop.isSelected()));
 		p.setProperty("selectAll", String.valueOf(selectAll.isSelected()));
+		p.setProperty("url",url);
 		p.store(file, "config");
 
 	}catch (Exception e) {
