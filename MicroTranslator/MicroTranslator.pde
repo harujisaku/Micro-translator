@@ -2,9 +2,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.awt.datatransfer.UnsupportedFlavorException;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+
 import java.net.URLEncoder;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Properties;
 
 import java.awt.Canvas;
 import java.awt.Toolkit;
@@ -31,8 +39,6 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JCheckBox;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 static final String COPY = "コピー,copy";
 static final String PASTE = "ペースト,paste";
@@ -55,6 +61,8 @@ static final Color FOREGROUND_COLOR = new Color(250,250,250);
 boolean isBigger = false;
 boolean isBigged = false;
 boolean wantBig = false;
+boolean isAlwaysTop;
+boolean isSelectAll;
 String url;
 String[] fontList = PFont.list();
 String[] langList ={"Japanese","English","French","Russian","Italian"};
@@ -78,20 +86,19 @@ JComboBox langCombox = new JComboBox(langList);
 JButton transButton = new JButton(TRANS_BUTTON);
 JCheckBox selectAll;
 JCheckBox alwaysTop;
+Properties p;
 
 void setup() {
 	size(200, 225);
 	windowSetting();
-	String[] urls;
-	urls=loadStrings(URL_TEXT);
-	url=urls[0];
+	loadConfig();
 	Pattern p = Pattern.compile("^https?://[a-zA-Z0-9/:%#&~=_!'\\$\\?\\(\\)\\.\\+\\*\\-]+$");
 	Matcher m = p.matcher(url);
 	if(!m.find()){
 		exit();
 	}
-		fontG=createFont("SansSerif",90.0);
-		fontM=createFont("Serif",90.0);
+	fontG=createFont("SansSerif",90.0);
+	fontM=createFont("Serif",90.0);
 	drawButton();
 }
 
@@ -103,8 +110,8 @@ void draw(){
 		transArea = new JTextArea(trans.getText());
 		textPane = new JScrollPane(textArea);
 		transPane = new JScrollPane(transArea);
-		selectAll = new JCheckBox(SELECT_ALL_CHECKBOX);
-		alwaysTop = new JCheckBox(ALWAYS_TOP_CHECKBOX);
+		selectAll = new JCheckBox(SELECT_ALL_CHECKBOX,isSelectAll);
+		alwaysTop = new JCheckBox(ALWAYS_TOP_CHECKBOX,isAlwaysTop);
 		textPane.setBounds(10,13,480,125);
 		transPane.setBounds(10,165,480,125);
 		textArea.setBounds(10,13,480,125);
@@ -123,6 +130,7 @@ void draw(){
 		selectAll.setBounds(240,139,100,25);
 		selectAll.setBackground(BACKGROUND_COLOR);
 		selectAll.setForeground(FOREGROUND_COLOR);
+		selectAll.addActionListener(new CheckAction());
 		alwaysTop.setBounds(340,139,100,25);
 		alwaysTop.setBackground(BACKGROUND_COLOR);
 		alwaysTop.setForeground(FOREGROUND_COLOR);
@@ -263,6 +271,55 @@ void drawButton(){
 	text(AFTER_TRANS,10,142);
 }
 
+void writeConfig(){
+	FileWriter file  = null;
+	try {
+		file = new FileWriter(dataPath("")+"\\MicroTranslator.properties");
+		p = new Properties();
+
+		p.setProperty("alwaysTop", String.valueOf(alwaysTop.isSelected()));
+		p.setProperty("selectAll", String.valueOf(selectAll.isSelected()));
+		p.store(file, "config");
+
+	}catch (Exception e) {
+		System.out.println(e.getMessage());
+	}finally {
+		if(file != null) {
+			try {
+				file.close();
+			}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+}
+
+import java.io.FileReader;
+import java.util.Properties;
+void loadConfig(){
+	FileReader file  = null;
+		try {
+			file = new FileReader(dataPath("")+"\\MicroTranslator.properties");
+			Properties p = new Properties();
+			p.load(file);
+			isAlwaysTop=Boolean.valueOf(p.getProperty("alwaysTop"));
+			isSelectAll=Boolean.valueOf(p.getProperty("selectAll"));
+			url=p.getProperty("url");
+		}catch (Exception e) {
+			System.out.println(e.getMessage());
+		}finally {
+			if(file != null) {
+				try {
+					file.close();
+				}catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+		}
+	}
+}
+
+
+
 String getText(String url) throws IOException {
 	HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 	int responseCode = connection.getResponseCode();
@@ -321,7 +378,10 @@ class myListener implements ActionListener{
 class CheckAction implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		surface.setAlwaysOnTop(alwaysTop.isSelected());
+		JCheckBox ce = (JCheckBox)e.getSource();
+		if(ce==alwaysTop) surface.setAlwaysOnTop(alwaysTop.isSelected());
+		if(ce==selectAll) ;
+		writeConfig();
 	}
 }
 
