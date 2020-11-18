@@ -50,7 +50,7 @@ public class MicroTranslator extends JFrame{
 	static final Color TEXT_COLOR = new Color(250,250,250);
 	static final Color FOREGROUND_COLOR = new Color(250,250,250);
 	static final Color CARET_COLOR = new Color(82,139,255);
-	boolean canSelectAll = true;
+	boolean canSelectAll = true,isSelectAll=true;
 	
 	Translate trans = new Translate("https://script.google.com/macros/s/AKfycbzlq6vwO3tljMLjPg6l2nU4IetxueScBmN9RU4n3dm4rl6_4Wg/exec?text=");
 	public Container contentPane;
@@ -179,22 +179,31 @@ public class MicroTranslator extends JFrame{
 		}});
 		textField.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				if(!canSelectAll) return;
+				if(!canSelectAll||!isSelectAll){
+					canSelectAll=true;
+					return;
+				}
 				textField.selectAll();
 		}});
 		transField.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				if(!canSelectAll) return;
+				if(!canSelectAll||!isSelectAll){
+					canSelectAll=true;
+					return;
+				}
 				transField.selectAll();
 		}});
 		textArea.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				if(!canSelectAll) return;
+				if(!canSelectAll||!isSelectAll){
+					canSelectAll=true;
+					return;
+				}
 				textArea.selectAll();
 		}});
 		transArea.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				if(!canSelectAll){
+				if(!canSelectAll||!isSelectAll){
 					canSelectAll=true;
 					return;
 				}
@@ -226,6 +235,14 @@ public class MicroTranslator extends JFrame{
 					textArea.setCaretPosition(textField.getCaretPosition());
 					langComboxBig.setSelectedIndex(langComboxMain.getSelectedIndex());
 		}}});
+		alwaysTop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setAlwaysOnTop(alwaysTop.isSelected());
+		}});
+		selectAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				isSelectAll=selectAll.isSelected();
+		}});
 		transField.setEditable(false);
 		transArea.setEditable(false);
 		
