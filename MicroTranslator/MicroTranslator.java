@@ -140,7 +140,7 @@ public class MicroTranslator extends JFrame{
 		
 		transButtonMain.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("translate");
+				transField.setText(trans.translate(textField.getText()));
 		}});
 		
 		transField.setEditable(false);
@@ -160,6 +160,7 @@ public class MicroTranslator extends JFrame{
 
 class Translate{
 	String url;
+	String defaultLanguage = "en";
 	GoogleTranslate googleTranslate;
 	public Translate(String url){
 		this.url=url;
@@ -174,6 +175,10 @@ class Translate{
 			System.out.println(e.getMessage());
 		}
 		return transedString;
+	}
+
+	public String translate(String text){
+		return translate(text,defaultLanguage);
 	}
 
 	public String replaceToTag(String text){
@@ -197,7 +202,7 @@ class Translate{
 
 		String getString(String text,String language) throws IOException {
 			this.language=language;
-			sendUrl=url+text+"&target="+language;
+			sendUrl=url+URLEncoder.encode(text,"UTF-8")+"&target="+language;
 			connection = (HttpURLConnection) new URL(sendUrl).openConnection();
 			responseCode = connection.getResponseCode();
 			InputStream inputStream;
