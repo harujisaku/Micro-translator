@@ -210,7 +210,7 @@ public class MicroTranslator extends JFrame{
 					pack();
 					canSelectAll=false;
 					textField.requestFocus();
-					textField.setCaretPosition(textField.getText().length());
+					textField.setCaretPosition(textArea.getCaretPosition());
 		}}});
 		textField.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -222,7 +222,7 @@ public class MicroTranslator extends JFrame{
 					pack();
 					canSelectAll=false;
 					textArea.requestFocus();
-					textArea.setCaretPosition(textArea.getText().length());
+					textArea.setCaretPosition(textField.getCaretPosition());
 		}}});
 		transField.setEditable(false);
 		transArea.setEditable(false);
