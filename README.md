@@ -37,10 +37,9 @@ https://github.com/harujisaku/Micro-translator/raw/main/MicroTranslator/code.gs
 java 8 以降が動く必要があります。
 
 # 開発
-processing3の開発環境が必要です。
-https://processing.org/
+javaの開発環境が必要です。
 
-MicroTranslator.pdeを開いて実行できます。
+MicroTranslator.javaを開いて実行できます。
 
 # その他
 
