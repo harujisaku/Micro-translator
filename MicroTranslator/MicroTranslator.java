@@ -271,7 +271,9 @@ class Translate{
 	public String translate(String text,String language){
 		String transedString = "failed!";
 		try {
+			text = replaceToTag(text);
 			transedString = googleTranslate.getString(text,language);
+			transedString = replaceFromTag(transedString);
 		} catch(IOException e) {
 			System.out.println(e.getMessage());
 		}
