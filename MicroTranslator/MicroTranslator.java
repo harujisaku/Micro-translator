@@ -1,4 +1,4 @@
-package MicroTranslator;
+// package MicroTranslator;
 
 import java.io.IOException;
 
@@ -111,7 +111,6 @@ public class MicroTranslator extends JFrame{
 		bigPane.add(alwaysTop);
 		bigPane.add(selectAll);
 		
-		// contentPane.add(bigPane);
 		contentPane.add(mainPane);
 		
 		bigPane.setBounds(0,0,500,300);
@@ -209,7 +208,7 @@ public class MicroTranslator extends JFrame{
 					canSelectAll=true;
 					return;
 				}
-				textArea.selectAll();
+				transArea.selectAll();
 		}});
 		textArea.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
