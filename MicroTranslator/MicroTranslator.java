@@ -211,6 +211,7 @@ public class MicroTranslator extends JFrame{
 					canSelectAll=false;
 					textField.requestFocus();
 					textField.setCaretPosition(textArea.getCaretPosition());
+					langComboxMain.setSelectedIndex(langComboxBig.getSelectedIndex());
 		}}});
 		textField.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -223,6 +224,7 @@ public class MicroTranslator extends JFrame{
 					canSelectAll=false;
 					textArea.requestFocus();
 					textArea.setCaretPosition(textField.getCaretPosition());
+					langComboxBig.setSelectedIndex(langComboxMain.getSelectedIndex());
 		}}});
 		transField.setEditable(false);
 		transArea.setEditable(false);
