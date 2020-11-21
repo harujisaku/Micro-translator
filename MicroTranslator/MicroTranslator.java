@@ -30,8 +30,8 @@ import javax.swing.JCheckBox;
 @SuppressWarnings("serial")
 public class MicroTranslator extends JFrame{
 	
-	static final String[] LANG_LIST = {"Japanese","English","French","Russian","Italian"};
-	static final String[] TRANS_LANG_LIST ={"ja","en","fr","ru","it"};
+	public final String[] LANG_LIST = {"Japanese","English","French","Russian","Italian"};
+	public final String[] TRANS_LANG_LIST ={"ja","en","fr","ru","it"};
 	static final String AFTER_TEXT = "after";
 	static final String BEFORE_TEXT = "before";
 	static final String TRANS_TO_TEXT = "trans to";
@@ -46,6 +46,15 @@ public class MicroTranslator extends JFrame{
 	
 	Translate trans = new Translate("https://script.google.com/macros/s/AKfycbzlq6vwO3tljMLjPg6l2nU4IetxueScBmN9RU4n3dm4rl6_4Wg/exec?text=");
 	public Container contentPane;
+	
+	public JPanel mainPane,bigPane;
+	public JLabel afterTransMain,beforeTransMain,afterTransBig,beforeTransBig,transToMain,transToBig;
+	public JTextField textField,transField;
+	public JTextArea textArea,transArea;
+	public JButton transButtonMain,transButtonBig;
+	public JComboBox langComboxMain,langComboxBig;
+	public JCheckBox selectAll,alwaysTop;
+	
 	public static void main(String[] args) {
 		MicroTranslator mainFrame = new MicroTranslator("test");
 		mainFrame.setVisible(true);
@@ -61,24 +70,24 @@ public class MicroTranslator extends JFrame{
 		setAlwaysOnTop(true);
 		contentPane = getContentPane();
 		
-		JPanel mainPane = new JPanel();
-		JPanel bigPane = new JPanel();
-		JLabel afterTransMain = new JLabel(AFTER_TEXT);
-		JLabel beforeTransMain = new JLabel(BEFORE_TEXT);
-		JLabel afterTransBig = new JLabel(AFTER_TEXT);
-		JLabel beforeTransBig = new JLabel(BEFORE_TEXT);
-		JLabel transToMain = new JLabel(TRANS_TO_TEXT);
-		JLabel transToBig = new JLabel(TRANS_TO_TEXT);
-		JTextField textField = new JTextField();
-		JTextField transField = new JTextField();
-		JTextArea textArea = new JTextArea();
-		JTextArea transArea = new JTextArea();
-		JButton transButtonMain = new JButton("trans");
-		JButton transButtonBig = new JButton("trans");
-		JComboBox langComboxMain = new JComboBox(LANG_LIST);
-		JComboBox langComboxBig = new JComboBox(LANG_LIST);
-		JCheckBox selectAll = new JCheckBox(SELECT_ALL_CHECKBOX);
-		JCheckBox alwaysTop = new JCheckBox(ALWAYS_TOP_CHECKBOX);
+		mainPane = new JPanel();
+		bigPane = new JPanel();
+		afterTransMain = new JLabel(AFTER_TEXT);
+		beforeTransMain = new JLabel(BEFORE_TEXT);
+		afterTransBig = new JLabel(AFTER_TEXT);
+		beforeTransBig = new JLabel(BEFORE_TEXT);
+		transToMain = new JLabel(TRANS_TO_TEXT);
+		transToBig = new JLabel(TRANS_TO_TEXT);
+		textField = new JTextField();
+		transField = new JTextField();
+		textArea = new JTextArea();
+		transArea = new JTextArea();
+		transButtonMain = new JButton("trans");
+		transButtonBig = new JButton("trans");
+		langComboxMain = new JComboBox(LANG_LIST);
+		langComboxBig = new JComboBox(LANG_LIST);
+		selectAll = new JCheckBox(SELECT_ALL_CHECKBOX);
+		alwaysTop = new JCheckBox(ALWAYS_TOP_CHECKBOX);
 		
 		mainPane.setLayout(null);
 		bigPane.setLayout(null);
@@ -155,51 +164,16 @@ public class MicroTranslator extends JFrame{
 		selectAll.setForeground(TEXT_COLOR);
 		alwaysTop.setBackground(BACKGROUND_COLOR);
 		alwaysTop.setForeground(TEXT_COLOR);
-		
-		transButtonMain.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				transField.setText(trans.translate(textField.getText(),TRANS_LANG_LIST[langComboxMain.getSelectedIndex()]));
-		}});
-		transButtonBig.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				transArea.setText(trans.translate(textArea.getText(),TRANS_LANG_LIST[langComboxBig.getSelectedIndex()]));
-		}});
-		textField.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				transField.setText(trans.translate(textField.getText(),TRANS_LANG_LIST[langComboxMain.getSelectedIndex()]));
-		}});
-		textField.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if(!canSelectAll||!isSelectAll){
-					canSelectAll=true;
-					return;
-				}
-				textField.selectAll();
-		}});
-		transField.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if(!canSelectAll||!isSelectAll){
-					canSelectAll=true;
-					return;
-				}
-				transField.selectAll();
-		}});
-		textArea.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if(!canSelectAll||!isSelectAll){
-					canSelectAll=true;
-					return;
-				}
-				textArea.selectAll();
-		}});
-		transArea.addFocusListener(new FocusAdapter() {
-			public void focusGained(FocusEvent e) {
-				if(!canSelectAll||!isSelectAll){
-					canSelectAll=true;
-					return;
-				}
-				transArea.selectAll();
-		}});
+
+		transButtonMain.addActionListener(new Action(this));
+		transButtonBig.addActionListener(new Action(this));
+		textField.addActionListener(new Action(this));
+		alwaysTop.addActionListener(new Action(this));
+		selectAll.addActionListener(new Action(this));
+		textField.addFocusListener(new Focus(this));
+		transField.addFocusListener(new Focus(this));
+		textArea.addFocusListener(new Focus(this));
+		transArea.addFocusListener(new Focus(this));
 		textArea.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
 				if(textArea.getText().length()<15){
@@ -226,14 +200,6 @@ public class MicroTranslator extends JFrame{
 					textArea.setCaretPosition(textField.getCaretPosition());
 					langComboxBig.setSelectedIndex(langComboxMain.getSelectedIndex());
 		}}});
-		alwaysTop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setAlwaysOnTop(alwaysTop.isSelected());
-		}});
-		selectAll.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				isSelectAll=selectAll.isSelected();
-		}});
 		transField.setEditable(false);
 		transArea.setEditable(false);
 		
