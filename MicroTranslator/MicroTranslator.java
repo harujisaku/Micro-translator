@@ -174,32 +174,8 @@ public class MicroTranslator extends JFrame{
 		transField.addFocusListener(new Focus(this));
 		textArea.addFocusListener(new Focus(this));
 		transArea.addFocusListener(new Focus(this));
-		textArea.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e){
-				if(textArea.getText().length()<15){
-					textField.setText(textArea.getText());
-					contentPane.removeAll();
-					contentPane.add(mainPane);
-					getContentPane().setPreferredSize(new Dimension(200, 225));
-					pack();
-					canSelectAll=false;
-					textField.requestFocus();
-					textField.setCaretPosition(textArea.getCaretPosition());
-					langComboxMain.setSelectedIndex(langComboxBig.getSelectedIndex());
-		}}});
-		textField.addKeyListener(new KeyAdapter(){
-			public void keyReleased(KeyEvent e){
-				if(textField.getText().length()>=15){
-					textArea.setText(textField.getText());
-					contentPane.removeAll();
-					contentPane.add(bigPane);
-					getContentPane().setPreferredSize(new Dimension(500, 300));
-					pack();
-					canSelectAll=false;
-					textArea.requestFocus();
-					textArea.setCaretPosition(textField.getCaretPosition());
-					langComboxBig.setSelectedIndex(langComboxMain.getSelectedIndex());
-		}}});
+		textArea.addKeyListener(new Key(this));
+		textField.addKeyListener(new Key(this));
 		transField.setEditable(false);
 		transArea.setEditable(false);
 		

@@ -21,11 +21,19 @@ public class Focus implements FocusListener{
 	
 	private void textAreaAction(FocusEvent e){
 		JTextArea ta = (JTextArea)e.getSource();
+		if(!m.canSelectAll||!m.isSelectAll){
+			m.canSelectAll=true;
+			return;
+		}
 		ta.selectAll();
 	}
 	
 	private void textFieldAction(FocusEvent e){
 		JTextField tf = (JTextField)e.getSource();
+		if(!m.canSelectAll||!m.isSelectAll){
+			m.canSelectAll=true;
+			return;
+		}
 		tf.selectAll();
 	}
 }
