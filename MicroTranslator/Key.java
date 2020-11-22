@@ -1,3 +1,7 @@
+package MicroTranslator;
+
+import MicroTranslator.*;
+
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
